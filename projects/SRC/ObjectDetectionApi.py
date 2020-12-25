@@ -58,4 +58,6 @@ def imageCat():
         print("Some Error Occured")
         return "Error"  
     
-app.run()
+if __name__ == '__main__':
+    app.run()
+
