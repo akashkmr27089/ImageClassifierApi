@@ -12,7 +12,7 @@ class Model:
         self.device = 'cuda' if torch.cuda.is_available() else 'cpu'
         # self.model = self.model.to(self.device)
         self.n_inputs = 4096
-        self.n_classes = 100
+        self.n_classes = 102
         self.dataset = Dataset()
         
         # Freezing all the weights and then transfering to GPU

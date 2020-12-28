@@ -28,21 +28,33 @@ criterion = nn.NLLLoss()
 optimizer = optim.Adam(model.parameters())
 
 # Loopoing through entire dataset 
-LossValue = 0.0
-for i in range(epochs):
-    avgLossPerEpochs = 0.0
-    iterValuePerEpochs = 0
-    for features, labels in dataset.TrainIter:
-        iterValuePerEpochs += 1
-        optimizer.zero_grad()
-        output = model(features.to(device))
-        loss = criterion(output, labels.to(device))
-        # avgLossPerEpochs += float(loss)
-        print(loss)
-        loss.backward()
-        optimizer.step()
-    # avgLossPerEpochs = avgLossPerEpochs/iterValuePerEpochs
-    # print(" For epoch {} average loss is {}".format(i, avgLossPerEpochs))
+try:
+    LossValue = 0.0
+    for i in range(epochs):
+        avgLossPerEpochs = 0.0
+        iterValuePerEpochs = 0
+        for features, labels in dataset.TrainIter:
+            # print(features.size(), labels.size())
+            # print(labels)
+
+            #One Hot Labels 
+            labels_onehot = torch.zeros(len(labels), 102).scatter_(1, labels.unsqueeze(1), 1)
+            iterValuePerEpochs += 1
+            optimizer.zero_grad()
+            output = model(features.to(device))
+            
+            print(output.size(), labels_onehot.size())
+            loss = criterion(output, labels.to(device))
+            # avgLossPerEpochs += float(loss)
+            print(loss)
+            loss.backward()
+            optimizer.step()
+        # avgLossPerEpochs = avgLossPerEpochs/iterValuePerEpochs
+        # print(" For epoch {} average loss is {}".format(i, avgLossPerEpochs))
+except RuntimeError:
+    print("Runtime Error Occured ")
+    print(labels_onehot, labels_onehot.size())
+    print(len(labels), labels.unsqueeze(1))
 
 feature, labels = dataset.NextTrain()
 predict = model(feature.to(device))
