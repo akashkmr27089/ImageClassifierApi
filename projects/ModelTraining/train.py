@@ -28,3 +28,7 @@ from Model import Model
 ModelClass = Model()
 model = ModelClass.model
 ModelClass.summary()
+if(ModelClass.TestingNetwork() == True):
+    print("Model Working Fine")
+else:
+    print("Some Problem in the Model")
