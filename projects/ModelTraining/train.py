@@ -1,34 +1,50 @@
 from Model import Model
+from Dataset import Dataset
+import torch
+from torch import optim
+import torch.nn as nn
 
-# #Usnig Pretrained Alexnet 
-# model = models.alexnet(pretrained = True)
-# device = 'cuda' if torch.cuda.is_available() else 'cpu'
-# model = model.to('cuda')
+#Variables 
+epochs = 3
 
-# # Summerise the Model
-# # summary(model, (3, 224, 224))
-
-# # Freeze model weights
-# for param in model.parameters():
-#     param.requires_grad = False
-
-# n_inputs = 4096
-# n_classes = 100
-
-# # Add on classifier  #Classifier Model with the custom made classifier
-# model.classifier[6] = nn.Sequential(
-#                       nn.Linear(n_inputs, 256), 
-#                       nn.ReLU(), 
-#                       nn.Dropout(0.4),
-#                       nn.Linear(256, n_classes),                   
-#                       nn.LogSoftmax(dim=1))
-
-# predict = model(TestData.to(device))
-
+# Loading Model 
 ModelClass = Model()
 model = ModelClass.model
 ModelClass.summary()
+device = 'cuda' if torch.cuda.is_available() else 'cpu'
+
+# Testing Model
 if(ModelClass.TestingNetwork() == True):
     print("Model Working Fine")
 else:
-    print("Some Problem in the Model")
+    print(" Some Problem in Model Pre Model Testing")
+    raise Exception("PreTesting Error")
+
+# Loading Database
+dataset = Dataset()
+
+#Defining Optimisers and BackPropogation Loss Function 
+criterion = nn.NLLLoss()
+optimizer = optim.Adam(model.parameters())
+
+# Loopoing through entire dataset 
+LossValue = 0.0
+for i in range(epochs):
+    avgLossPerEpochs = 0.0
+    iterValuePerEpochs = 0
+    for features, labels in dataset.TrainIter:
+        iterValuePerEpochs += 1
+        optimizer.zero_grad()
+        output = model(features.to(device))
+        loss = criterion(output, labels.to(device))
+        # avgLossPerEpochs += float(loss)
+        print(loss)
+        loss.backward()
+        optimizer.step()
+    # avgLossPerEpochs = avgLossPerEpochs/iterValuePerEpochs
+    # print(" For epoch {} average loss is {}".format(i, avgLossPerEpochs))
+
+feature, labels = dataset.NextTrain()
+predict = model(feature.to(device))
+print('Predicted ')
+print(predict)
