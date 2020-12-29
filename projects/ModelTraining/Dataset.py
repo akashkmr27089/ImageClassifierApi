@@ -53,16 +53,17 @@ class Dataset:
         }
 
         # Dataloader iterators, make sure to shuffle
-        dataloaders = {
+        self.dataloaders = {
             'train': DataLoader(data['train'], batch_size=self.batch_size, shuffle=True),
             'val': DataLoader(data['valid'], batch_size=self.batch_size, shuffle=True),
             'test': DataLoader(data['test'], batch_size=self.batch_size, shuffle=True)
         }
 
+
         # Making it iterator on the go
-        self.TrainIter = iter(dataloaders['train'])
-        self.ValidIter = iter(dataloaders['val'])
-        self.TestIter = iter(dataloaders['test'])
+        self.TrainIter = iter(self.dataloaders['train'])
+        self.ValidIter = iter(self.dataloaders['val'])
+        self.TestIter = iter(self.dataloaders['test'])
 
 
     def TestData(self):
@@ -72,18 +73,18 @@ class Dataset:
         feature, _ = next(self.TrainIter)
         return feature[0].resize(1,3,224,224)
 
-    def NextTest(self):
-        # Returning Test Data
-        ## Will be a list containing (Feature, Labels )
-        return next(self.TestIter)
+    # def NextTest(self):
+    #     # Returning Test Data
+    #     ## Will be a list containing (Feature, Labels )
+    #     return next(self.TestIter)
 
-    def NextTrain(self):
-        # Returning Train Data 
-        ## Will be a list containing (Feature, Labels )
-        return next(self.TrainIter)
+    # def NextTrain(self):
+    #     # Returning Train Data 
+    #     ## Will be a list containing (Feature, Labels )
+    #     return next(self.TrainIter)
 
-    def NextValidation(self):
-        # Returning Validation Data 
-        ## Will be a list containing (Feature, Labels )
-        return next(self.ValidIter)
+    # def NextValidation(self):
+    #     # Returning Validation Data 
+    #     ## Will be a list containing (Feature, Labels )
+    #     return next(self.ValidIter)
         
